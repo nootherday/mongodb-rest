@@ -60,7 +60,8 @@ var defaultConfig = {
     ssl: {
 	enabled: false,
         options: {}
-    }
+    },
+    readonly: false
 };
 
 var server;
@@ -117,6 +118,11 @@ module.exports = {
     if (!config.db) {
       config.db = "mongodb://localhost:27017";
     }
+
+    app.use(function(req, res, next) {
+        if (req.query.callback) res.json = res.jsonp;
+        next();
+    });
 
     require('./lib/rest')(app, config);
 
